@@ -387,6 +387,61 @@ class Determinant:
                 dets.append(det)
         return dets
 
+    def generateTripleExcitationsOfDet(self, nmo):
+        """
+        Generate all the double excitations of determinant in a list
+        """
+
+        alphaO, betaO = self.getOrbitalIndexLists()
+        alphaU, betaU = self.getUnoccupiedOrbitalsInLists(nmo)
+        dets = []
+
+        for i1, i2,i3 in combinations(alphaO, 3):
+            for j1, j2,j3 in combinations(alphaU, 3):
+                det = self.copy()
+                det.removeAlphaOrbital(i1)
+                det.addAlphaOrbital(j1)
+                det.removeAlphaOrbital(i2)
+                det.addAlphaOrbital(j2)
+                det.removeAlphaOrbital(i3)
+                det.addAlphaOrbital(j3)
+                dets.append(det)
+        for i1, i2,i3 in combinations(betaO, 3):
+            for j1, j2,j3 in combinations(betaU, 3):
+                det = self.copy()
+                det.removeBetaOrbital(i1)
+                det.addBetaOrbital(j1)
+                det.removeBetaOrbital(i2)
+                det.addBetaOrbital(j2)
+                det.removeBetaOrbital(i3)
+                det.addBetaOrbital(j3)
+                dets.append(det)
+        for i in alphaO:
+            for j in alphaU:
+                for i1, i2 in combinations(betaO, 2):
+                    for j1, j2 in combinations(betaU, 2):
+                        det = self.copy()
+                        det.removeBetaOrbital(i1)
+                        det.addBetaOrbital(j1)
+                        det.removeBetaOrbital(i2)
+                        det.addBetaOrbital(j2)
+                        det.removeAlphaOrbital(i)
+                        det.addAlphaOrbital(j)
+                        dets.append(det)  
+        for i in betaO:
+            for j in betaU:
+                for i1, i2 in combinations(alphaO, 2):
+                    for j1, j2 in combinations(alphaU, 2):
+                        det = self.copy()
+                        det.removeAlphaOrbital(i1)
+                        det.addAlphaOrbital(j1)
+                        det.removeAlphaOrbital(i2)
+                        det.addAlphaOrbital(j2)
+                        det.removeBetaOrbital(i)
+                        det.removeBetaOrbital(j)
+                        dets.append(det)  
+        return dets
+
     def generateSingleAndDoubleExcitationsOfDet(self, nmo):
         """
         Generate all the single and double excitations of determinant in a list
@@ -394,6 +449,12 @@ class Determinant:
 
         return self.generateSingleExcitationsOfDet(nmo) + self.generateDoubleExcitationsOfDet(nmo)
 
+    def generateSingleAndDoubleAndTripleExcitationsOfDet(self, nmo):
+        """
+        Generate all the single and double excitations of determinant in a list
+        """
+
+        return self.generateSingleExcitationsOfDet(nmo) + self.generateDoubleExcitationsOfDet(nmo) + self.generateTripleExcitationsOfDet(nmo)
     def copy(self):
         """
         Return a deep copy of self
